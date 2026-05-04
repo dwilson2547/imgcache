@@ -1,0 +1,34 @@
+name: Client Version Check
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "client/**"
+
+jobs:
+  version-check:
+    name: Verify client version is bumped
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check version has been incremented
+        run: |
+          BASE_VERSION=$(git show origin/${{ github.base_ref }}:client/setup.py \
+            | grep -oP "(?<=version=['\"])[^'\"]+"  )
+          PR_VERSION=$(grep -oP "(?<=version=['\"])[^'\"]+" client/setup.py)
+
+          echo "Base branch version : $BASE_VERSION"
+          echo "PR version          : $PR_VERSION"
+
+          if [ "$BASE_VERSION" = "$PR_VERSION" ]; then
+            echo "::error file=client/setup.py::Client library version ($PR_VERSION) must be incremented before merging changes to the client package."
+            exit 1
+          fi
+
+          echo "Version correctly bumped: $BASE_VERSION -> $PR_VERSION"
