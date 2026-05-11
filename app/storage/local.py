@@ -10,7 +10,9 @@ class LocalStorage(BaseStorage):
         return os.path.join(self.base_path, key)
 
     def write(self, key: str, data: bytes) -> None:
-        with open(self._path(key), "wb") as f:
+        path = self._path(key)
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "wb") as f:
             f.write(data)
 
     def read(self, key: str) -> bytes:

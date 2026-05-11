@@ -8,5 +8,10 @@ services:
     environment:
       - STORAGE_BACKEND=local
       - LOCAL_STORAGE_PATH=/data
+      - DATABASE_URL=sqlite:////data/imgcache.db
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://host.docker.internal:4317
+      - OTEL_SERVICE_NAME=imgcache
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - ./data:/data
