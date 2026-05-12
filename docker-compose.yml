@@ -1,7 +1,6 @@
-version: "3.9"
-
 services:
   imgcache:
+    image: dwilson2547/imgcache:latest
     build: .
     ports:
       - "8010:8010"
